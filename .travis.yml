@@ -1,0 +1,19 @@
+language: go
+os: linux
+dist: trusty
+sudo: required
+before_install:
+  - sudo apt-get install socat wget
+  - sudo wget -O /usr/bin/diagslave.linux.i386 'https://raw.githubusercontent.com/xft/modbus/master/test/tools/diagslave.linux.i386'
+  - sudo chmod a+x /usr/bin/diagslave.linux.i386
+before_script:
+  - sudo socat -d -d pty,mode=777,raw,echo=0,link=/dev/tty.modbus.rtu_diagslave_side pty,mode=777,raw,echo=0,link=/dev/tty.modbus.rtu &
+  - sudo socat -d -d pty,mode=777,raw,echo=0,link=/dev/tty.modbus.rtu_over_tcp_diagslave_side tcp-listen:5020,reuseaddr &
+  - sleep 3
+  - /usr/bin/diagslave.linux.i386 -m rtu /dev/tty.modbus.rtu_diagslave_side &
+  - /usr/bin/diagslave.linux.i386 -m rtu /dev/tty.modbus.rtu_over_tcp_diagslave_side &
+  - sleep 3
+go:
+  - "1.11"
+script:
+  - go test -v github.com/xft/modbus/test

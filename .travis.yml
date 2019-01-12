@@ -16,6 +16,7 @@ before_script:
   - ~/diagslave.linux.i386 -m rtu /dev/tty.modbus.rtu_over_tcp_diagslave_side &
   - ~/diagslave.linux.i386 -m ascii /dev/tty.modbus.ascii_diagslave_side &
   - ~/diagslave.linux.i386 -m ascii /dev/tty.modbus.ascii_over_tcp_diagslave_side &
+  - ~/diagslave.linux.i386 -m tcp -p 5022 &
   - sleep 3
 go:
   - "1.9"
